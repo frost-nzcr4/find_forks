@@ -43,13 +43,23 @@ def git_fetch_all():
     if not CONFIG['dry_run']:
         subprocess.call(fetch_all_cmd.split(' '))
 
-user, repo = determine_names()
 
-github_url='https://api.github.com/repos/%s/%s/forks'
-resp = urllib.request.urlopen(github_url % (user, repo), timeout=6)
-if PY3 and resp.status == 200 or resp.code == 200:
-    content = resp.read().decode('utf-8')
-    data = json.loads(content)
-    for remote in data:
-        git_remote_add(remote['owner']['login'], remote['clone_url'])
+def add_forks(url):
+    """Add forks to the current project."""
+    print('Open %s' % url)
+    try:
+        response = urllib.request.urlopen(url, timeout=6)
+    except urllib.error.URLError as ex:
+        print('Error: %s' % (ex.reason, ))
+        return None
+
+    if PY3 and response.status == 200 or response.code == 200:
+        content = response.read().decode('utf-8')
+        forks = json.loads(content)
+        for fork in forks:
+            git_remote_add(fork['owner']['login'], fork['clone_url'])
+
+user, repo = determine_names()
+github_url = 'https://api.github.com/repos/%s/%s/forks' % (user, repo)
+add_forks(github_url)
 git_fetch_all()
