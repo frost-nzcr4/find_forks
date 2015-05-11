@@ -8,6 +8,10 @@ import sys
 from six import PY3
 from six.moves import urllib
 
+CONFIG = {
+    'dry_run': False
+}
+
 
 def determine_names(remote_name=None):
     """Try to determine the user / repository name."""
@@ -23,6 +27,22 @@ def determine_names(remote_name=None):
 
     return user, repo
 
+
+def git_remote_add(name, url):
+    """Add fork as git remote."""
+    remote_add_cmd = 'git remote add %s %s' % (name, url)
+    print(remote_add_cmd)
+    if not CONFIG['dry_run']:
+        subprocess.call(remote_add_cmd.split(' '))
+
+
+def git_fetch_all():
+    """Fetch all forks."""
+    fetch_all_cmd = 'git fetch --all'
+    print(fetch_all_cmd)
+    if not CONFIG['dry_run']:
+        subprocess.call(fetch_all_cmd.split(' '))
+
 user, repo = determine_names()
 
 github_url='https://api.github.com/repos/%s/%s/forks'
@@ -31,9 +51,5 @@ if PY3 and resp.status == 200 or resp.code == 200:
     content = resp.read().decode('utf-8')
     data = json.loads(content)
     for remote in data:
-        remote_add_cmd="git remote add %s %s" % (remote['owner']['login'], remote['clone_url'])
-        print(remote_add_cmd)
-        subprocess.call(remote_add_cmd.split(" "))
-fetch_all_cmd="git fetch --all"
-print(fetch_all_cmd)
-subprocess.call(fetch_all_cmd.split(" "))
+        git_remote_add(remote['owner']['login'], remote['clone_url'])
+git_fetch_all()
