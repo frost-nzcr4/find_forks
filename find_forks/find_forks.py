@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
+import re
 import subprocess
 import sys
 
@@ -44,7 +45,7 @@ def git_fetch_all():
         subprocess.call(fetch_all_cmd.split(' '))
 
 
-def add_forks(url):
+def add_forks(url, follow_next=True):
     """Add forks to the current project."""
     print('Open %s' % url)
     try:
@@ -58,6 +59,14 @@ def add_forks(url):
         forks = json.loads(content)
         for fork in forks:
             git_remote_add(fork['owner']['login'], fork['clone_url'])
+        # Gets link to next page.
+        if follow_next:
+            link = response.getheader('Link', '') if PY3 else dict(response.info()).get('link', '')
+            match = re.match(r'<(.*)>;\ rel="next"', link)
+            if match:
+                return match.group(1)
+
+    return None
 
 
 def find_forks():
@@ -65,8 +74,11 @@ def find_forks():
 
     Runs all methods in proper order to find all forks of github user/repo."""
     user, repo = determine_names()
+
     url = 'https://api.github.com/repos/%s/%s/forks' % (user, repo)
-    add_forks(url)
+    while url:
+        url = add_forks(url)
+
     git_fetch_all()
 
 if __name__ == '__main__':
