@@ -8,32 +8,22 @@ import sys
 from six import PY3
 from six.moves import urllib
 
-user=None
-repo=None
 
-github_cmd="git config --get remote.github.url".split(" ")
-origin_cmd="git config --get remote.origin.url".split(" ")
-
-# we want to determine the user / repository name
-# my convention is that my own projects use 'github' as the remote
-# origin when I created it. And, obviously, a clone will use 'origin'.
-# so try them each
-try:
-    github = subprocess.check_output(github_cmd).decode('utf-8').strip()
-    user, repo = github.split('/')[-2:]
-    user = user.lstrip('git@github.com:')
-    repo = repo.rstrip('.git')
-except subprocess.CalledProcessError:
-    pass  # ok, so no remote called 'github', let's try origin
-
-if user is None and repo is None:
+def determine_names(remote_name=None):
+    """Try to determine the user / repository name."""
+    # A clone from github will use "origin" as remote name by default.
+    remote_cmd = 'git config --get remote.%s.url' % (remote_name if remote_name else 'origin', )
     try:
-        origin = subprocess.check_output(origin_cmd).decode('utf-8').strip()
+        origin = subprocess.check_output(remote_cmd.split(' ')).decode('utf-8').strip()
         user, repo = origin.split('/')[-2:]
         repo = repo.rstrip('.git')
     except subprocess.CalledProcessError:
-        print("Could not determine user or repo.")
+        print('Could not determine user or repo.')
         sys.exit(1)
+
+    return user, repo
+
+user, repo = determine_names()
 
 github_url='https://api.github.com/repos/%s/%s/forks'
 resp = urllib.request.urlopen(github_url % (user, repo), timeout=6)
