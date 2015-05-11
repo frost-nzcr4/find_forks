@@ -59,7 +59,15 @@ def add_forks(url):
         for fork in forks:
             git_remote_add(fork['owner']['login'], fork['clone_url'])
 
-user, repo = determine_names()
-github_url = 'https://api.github.com/repos/%s/%s/forks' % (user, repo)
-add_forks(github_url)
-git_fetch_all()
+
+def find_forks():
+    """Find forks.
+
+    Runs all methods in proper order to find all forks of github user/repo."""
+    user, repo = determine_names()
+    url = 'https://api.github.com/repos/%s/%s/forks' % (user, repo)
+    add_forks(url)
+    git_fetch_all()
+
+if __name__ == '__main__':
+    find_forks()
