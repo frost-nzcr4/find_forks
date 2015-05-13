@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# coding: utf-8
+"""Find forks logic."""
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from argparse import ArgumentParser
@@ -86,10 +88,19 @@ def find_forks(user=None, repo=None, determine_names_handler=None, per_page=100)
 
 def main():
     """Main function to run as shell script."""
+    try:
+        from .__init__ import __version__
+    except (SystemError, ValueError) as ex:
+        if PY3 and isinstance(ex, SystemError) or isinstance(ex, ValueError):
+            from __init__ import __version__
+        else:
+            raise
+
     parser = ArgumentParser(prog='find_forks')
     parser.add_argument('-u', '--user', default=None, help='Specify github user')
     parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
     parser.add_argument('--dry-run', action='store_true', help='Do not run the git commands', default=CONFIG['dry_run'])
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
 
     CONFIG['dry_run'] = args.dry_run
