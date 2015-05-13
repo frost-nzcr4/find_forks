@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from argparse import ArgumentParser
 import json
 import re
 import subprocess
@@ -81,5 +82,17 @@ def find_forks():
 
     git_fetch_all()
 
+
+def main():
+    """Main function to run as shell script."""
+    parser = ArgumentParser(prog='find_forks')
+    parser.add_argument('-u', '--user', default=None, help='Specify github user')
+    parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
+    parser.add_argument('--dry-run', action='store_true', help='Do not run the git commands', default=CONFIG['dry_run'])
+    args = parser.parse_args()
+
+    CONFIG['dry_run'] = args.dry_run
+    find_forks(args.user, args.repo)
+
 if __name__ == '__main__':
-    find_forks()
+    main()
