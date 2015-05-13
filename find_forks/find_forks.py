@@ -70,11 +70,11 @@ def add_forks(url, follow_next=True):
     return None
 
 
-def find_forks():
+def find_forks(determine_names_handler=None):
     """Find forks.
 
     Runs all methods in proper order to find all forks of github user/repo."""
-    user, repo = determine_names()
+    user, repo = determine_names() if determine_names_handler is None else determine_names_handler()
 
     url = 'https://api.github.com/repos/%s/%s/forks' % (user, repo)
     while url:
