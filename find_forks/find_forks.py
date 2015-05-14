@@ -10,7 +10,7 @@ import subprocess
 import sys
 
 from six import PY3
-from six.moves import urllib
+from six.moves import urllib  # pylint: disable=import-error
 
 CONFIG = {
     'dry_run': False
@@ -92,7 +92,7 @@ def main():
         from .__init__ import __version__
     except (SystemError, ValueError) as ex:
         if PY3 and isinstance(ex, SystemError) or isinstance(ex, ValueError):
-            from __init__ import __version__
+            from __init__ import __version__  # pylint: disable=import-error,no-name-in-module
         else:
             raise
 

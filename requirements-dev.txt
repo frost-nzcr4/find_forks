@@ -1,0 +1,6 @@
+# To add specified requirements install `pip` and run:
+#
+# pip install -r requirements-dev.txt
+#
+pep8==1.6.2
+pylint==1.4.3
