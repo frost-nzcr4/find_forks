@@ -1,0 +1,44 @@
+# .coveragerc to control coverage.py
+# @see http://nedbatchelder.com/code/coverage/config.html
+#
+# Run it with:
+#
+#     coverage run tests/run.py
+#     coverage html
+#
+# then open `tests/coverage/html_report/index.html` with your browser.
+
+[run]
+branch = True
+data_file = tests/coverage/.coverage
+#parallel = True
+source = .
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain about missing debug-only code:
+    def __repr__
+    if self\.debug
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
+
+    # Don't complain if non-runnable code isn't run:
+    if 0:
+    if __name__ == .__main__.:
+
+ignore_errors = True
+omit =
+    .venv/* 
+    .virtualenv/*
+    tests/*
+    __main__.py
+show_missing = True
+
+[html]
+directory = tests/coverage/html_report
