@@ -1,6 +1,8 @@
 /.settings/
 /.venv/
 /.virtualenv/
+/tests/coverage/
+/.bashrc
 /.project
 /.pydevproject
 *.pyc
