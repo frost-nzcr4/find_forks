@@ -12,6 +12,7 @@ from six.moves import urllib  # pylint: disable=import-error
 
 from .__init__ import CONFIG
 from .git_wrapper import git_config_get_remote, git_fetch_all, git_remote_add
+from .interesting import add_interesting_fork, print_interesting_forks
 
 
 def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
@@ -41,6 +42,7 @@ def add_forks(url, follow_next=True, **kwargs):
         content = response.read().decode('utf-8')
         forks = json.loads(content)
         for fork in forks:
+            add_interesting_fork(fork)
             git_remote_add(fork['owner']['login'], fork['clone_url'], **kwargs)
         # Gets link to next page.
         if follow_next:
@@ -87,6 +89,7 @@ def main():
     args = parser.parse_args()
 
     find_forks(**vars(args))
+    print_interesting_forks()
 
 if __name__ == '__main__':
     main()
