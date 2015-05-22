@@ -6,31 +6,26 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from argparse import ArgumentParser
 import json
 import re
-import subprocess
-import sys
 
 from six import PY3
 from six.moves import urllib  # pylint: disable=import-error
 
 from .__init__ import CONFIG
-from .git_wrapper import git_fetch_all, git_remote_add
+from .git_wrapper import git_config_get_remote, git_fetch_all, git_remote_add
 
 
 def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
     """Try to determine the user and repository name.
 
     :param remote_name: A clone from github will use "origin" as remote name by default.
-    """
-    remote_cmd = 'git config --get remote.%s.url' % (remote_name, )
-    try:
-        origin = subprocess.check_output(remote_cmd.split(' ')).decode('utf-8').strip()
-        user, repo = origin.split('/')[-2:]
-        repo = repo.rstrip('.git')
-    except subprocess.CalledProcessError:
-        print('Could not determine user or repo.')
-        sys.exit(1)
 
-    return user, repo
+    Returns list with user and repo.
+    """
+    remote_url = git_config_get_remote(remote_name)
+    if not remote_url:
+        raise RuntimeError('Could not get remote url with name "%s". Check output of your `git remote`.' % (remote_name, ))
+
+    return remote_url.rstrip('.git').split('/')[-2:]
 
 
 def add_forks(url, follow_next=True, **kwargs):
