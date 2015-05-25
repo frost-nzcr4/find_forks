@@ -7,7 +7,7 @@ import unittest
 
 from six import PY3
 
-from find_forks.find_forks import add_forks, determine_names, find_forks, git_fetch_all, git_remote_add, main
+from find_forks.find_forks import add_forks, determine_names, find_forks, main
 
 if PY3:
     from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module
@@ -95,19 +95,6 @@ class FindForksTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             user, repo = determine_names('name-with-an-error')
-
-    def test_git_remote_add(self):
-        name = 'frost-nzcr4'
-        url = 'https://github.com/frost-nzcr4/find_forks.git'
-
-        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
-            git_remote_add(name, url)
-        call_mock.assert_called_once_with(('git remote add %s %s' % (name, url)).split(' '))
-
-    def test_git_fetch_all(self):
-        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
-            git_fetch_all()
-        call_mock.assert_called_once_with(('git fetch --all').split(' '))
 
     def test_find_forks(self):
         with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
