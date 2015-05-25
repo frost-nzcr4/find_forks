@@ -7,6 +7,28 @@ Useful to find interesting commits of:
 * old repo with many updated forks,
 * fresh repo with many forks that original author doesn't want or doesn't have time to merge.
 
+Try it out now, just type:
+
+```ShellSession
+user@host ~/git $ git clone https://github.com/frost-nzcr4/find_forks.git
+Cloning into 'find_forks'...
+user@host ~/git $ git clone https://github.com/frost-nzcr4/webmoney.git
+Cloning into 'webmoney'...
+user@host ~/git $ cd webmoney/
+user@host ~/git/webmoney $ python ../find_forks/ --dry-run
+git config --get remote.origin.url
+Open https://api.github.com/repos/frost-nzcr4/webmoney/forks?per_page=100
+git remote add aktuba https://github.com/aktuba/webmoney.git
+git remote add 4you4ever https://github.com/4you4ever/webmoney.git
+git remote add marliotto https://github.com/marliotto/webmoney.git
+git fetch --all
+Possible interesting forks
+                                 | forks | stargazers | watchers
+----------------------------------------------------------------
+                       4you4ever |    0 |    1 |    1
+                       marliotto |    0 |    1 |    1
+```
+
 ## Install
 
 You need `python` (3.4.2 and 2.7.8 tested) and `pip` installed.

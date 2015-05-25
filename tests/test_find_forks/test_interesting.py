@@ -7,7 +7,8 @@ import unittest
 
 from six import PY3
 
-from find_forks.find_forks import add_forks, determine_names, find_forks, main
+from find_forks.find_forks import add_forks
+from find_forks.interesting import print_interesting_forks
 
 if PY3:
     from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module
@@ -15,9 +16,9 @@ else:
     from mock import patch, MagicMock, Mock
 
 
-class FindForksTest(unittest.TestCase):
-    def test_add_forks(self):
-        self.assertIsNone(add_forks('httttps://unavailable!url'))
+class InterestingTest(unittest.TestCase):
+    def test_print_interesting_forks(self):
+        print_interesting_forks(sort='my_rule', custom_sorting_rules={'my_rule': lambda x: x[3]})
 
         url = 'https://github.com/frost-nzcr4/find_forks'
         response_mock = MagicMock()
@@ -46,10 +47,10 @@ class FindForksTest(unittest.TestCase):
     "clone_url": "https://github.com/frost-nzcr4/find_forks.git",
     "svn_url": "https://github.com/frost-nzcr4/find_forks",
     "forks": 0,
-    "forks_count": 0,
+    "forks_count": 1,
     "watchers": 0,
-    "watchers_count": 0,
-    "stargazers_count": 0,
+    "watchers_count": 2,
+    "stargazers_count": 3,
     "open_issues": 0,
     "open_issues_count": 0,
     "has_issues": false,
@@ -75,44 +76,4 @@ class FindForksTest(unittest.TestCase):
                     response_mock.code = 404
                 self.assertIsNone(add_forks(url))
 
-    def test_determine_names(self):
-        """To run this test you'll need to prepare git first, run:
-
-        git remote add test-origin-1 https://github.com/frost-nzcr4/find_forks.git
-        git remote add test-origin-2 https://github.com/yagmort/symfony1.git
-        """
-        user, repo = determine_names()
-        self.assertEqual(user, 'frost-nzcr4')
-        self.assertEqual(repo, 'find_forks')
-
-        user, repo = determine_names('test-origin-1')
-        self.assertEqual(user, 'frost-nzcr4')
-        self.assertEqual(repo, 'webmoney')
-
-        user, repo = determine_names('test-origin-2')
-        self.assertEqual(user, 'yagmort')
-        self.assertEqual(repo, 'symfony1')
-
-        with self.assertRaises(RuntimeError):
-            user, repo = determine_names('name-with-an-error')
-
-    def test_find_forks(self):
-        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
-            with patch('find_forks.find_forks.add_forks', return_value=None) as add_forks_mock:
-                find_forks()
-        add_forks_mock.assert_called_once()
-        call_mock.assert_called_once()
-
-    def test_main(self):
-        with patch('find_forks.find_forks.find_forks', return_value=None) as find_forks_mock:
-            main()
-            find_forks_mock.assert_called_once_with(user=None, repo=None, dry_run=False, remote_name='origin')
-
-            # Test __version__ exceptions.
-            find_forks_mock = MagicMock(side_effect=SystemError())
-            del find_forks_mock.__version__
-            modules = {
-                'find_forks.__init__': find_forks_mock
-            }
-            with patch.dict('sys.modules', modules):
-                self.assertRaises(ImportError, main)
+        print_interesting_forks()
