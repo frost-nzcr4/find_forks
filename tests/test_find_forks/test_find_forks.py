@@ -1,5 +1,6 @@
 # coding: utf-8
 """test_find_fork."""
+# pylint: disable=no-self-use
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import unittest
@@ -50,7 +51,7 @@ class FindForksTest(unittest.TestCase):
         response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", <https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
 
         with patch('find_forks.find_forks.urllib.request.urlopen', return_value=response_mock) as urlopen_mock:
-            with patch('find_forks.find_forks.subprocess.call', return_value=None):
+            with patch('find_forks.git_wrapper.subprocess.call', return_value=None):
                 self.assertEqual(add_forks(url), 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2')
                 urlopen_mock.assert_called_once_with(url, timeout=6)
                 response_mock.status = 404
@@ -74,24 +75,24 @@ class FindForksTest(unittest.TestCase):
         self.assertEqual(user, 'yagmort')
         self.assertEqual(repo, 'symfony1')
 
-        with self.assertRaises(SystemExit):
+        with self.assertRaises(RuntimeError):
             user, repo = determine_names('name-with-an-error')
 
     def test_git_remote_add(self):
         name = 'frost-nzcr4'
         url = 'https://github.com/frost-nzcr4/find_forks.git'
 
-        with patch('find_forks.find_forks.subprocess.call', return_value=None) as call_mock:
+        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
             git_remote_add(name, url)
         call_mock.assert_called_once_with(('git remote add %s %s' % (name, url)).split(' '))
 
     def test_git_fetch_all(self):
-        with patch('find_forks.find_forks.subprocess.call', return_value=None) as call_mock:
+        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
             git_fetch_all()
         call_mock.assert_called_once_with(('git fetch --all').split(' '))
 
     def test_find_forks(self):
-        with patch('find_forks.find_forks.subprocess.call', return_value=None) as call_mock:
+        with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
             with patch('find_forks.find_forks.add_forks', return_value=None) as add_forks_mock:
                 find_forks()
         add_forks_mock.assert_called_once()
@@ -100,7 +101,7 @@ class FindForksTest(unittest.TestCase):
     def test_main(self):
         with patch('find_forks.find_forks.find_forks', return_value=None) as find_forks_mock:
             main()
-            find_forks_mock.assert_called_once_with(None, None)
+            find_forks_mock.assert_called_once_with(user=None, repo=None, dry_run=False, remote_name='origin')
 
             # Test __version__ exceptions.
             find_forks_mock = MagicMock(side_effect=SystemError())
