@@ -65,7 +65,8 @@ def find_forks(user=None, repo=None, determine_names_handler=None, per_page=100,
     while url:
         url = add_forks(url, **kwargs)
 
-    git_fetch_all(**kwargs)
+    if not kwargs.get('no_fetch', False):
+        git_fetch_all(**kwargs)
 
 
 def main():
@@ -82,6 +83,7 @@ def main():
     parser.add_argument(
         '-n', '--remote-name', default=CONFIG['remote_name'],
         help='Specify git remote name to determine user and repo (default: %s)' % (CONFIG['remote_name'], ))
+    parser.add_argument('--no-fetch', default=False, action='store_true', help='Do not run git fetch to run it manually later')
     parser.add_argument('-u', '--user', default=None, help='Specify github user')
     parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
     parser.add_argument('--dry-run', default=CONFIG['dry_run'], action='store_true', help='Do not run the git commands')
