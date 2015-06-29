@@ -80,6 +80,7 @@ class FindForksTest(unittest.TestCase):
 
         git remote add test-origin-1 https://github.com/frost-nzcr4/find_forks.git
         git remote add test-origin-2 https://github.com/yagmort/symfony1.git
+        git remote add test-origin-3 git@github.com:tjerkw/Android-SlideExpandableListView.git
         """
         user, repo = determine_names()
         self.assertEqual(user, 'frost-nzcr4')
@@ -92,6 +93,10 @@ class FindForksTest(unittest.TestCase):
         user, repo = determine_names('test-origin-2')
         self.assertEqual(user, 'yagmort')
         self.assertEqual(repo, 'symfony1')
+
+        user, repo = determine_names('test-origin-3')
+        self.assertEqual(user, 'tjerkw')
+        self.assertEqual(repo, 'Android-SlideExpandableListView')
 
         with self.assertRaises(RuntimeError):
             user, repo = determine_names('name-with-an-error')
