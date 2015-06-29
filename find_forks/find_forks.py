@@ -26,7 +26,10 @@ def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
     if not remote_url:
         raise RuntimeError('Could not get remote url with name "%s". Check output of your `git remote`.' % (remote_name, ))
 
-    return remote_url.lstrip('git@github.com:').rstrip('.git').split('/')[-2:]
+    remote_url = remote_url[15:] if 'git@github.com:' == remote_url[0:15] else remote_url
+    remote_url = remote_url[:-4] if '.git' == remote_url[-4:] else remote_url
+
+    return remote_url.split('/')[-2:]
 
 
 def add_forks(url, follow_next=True, **kwargs):
