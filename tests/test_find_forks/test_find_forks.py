@@ -3,6 +3,7 @@
 # pylint: disable=no-self-use
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import textwrap
 import unittest
 
 from six import PY3
@@ -25,39 +26,40 @@ class FindForksTest(unittest.TestCase):
             response_mock.status = 200
         else:
             response_mock.code = 200
-        response_mock.read = Mock(return_value='''[
-  {
-    "id": 1,
-    "name": "find_forks",
-    "full_name": "frost-nzcr4/find_forks",
-    "owner": {
-      "login": "frost-nzcr4"
-    },
-    "private": false,
-    "fork": true,
-    "forks_url": "https://api.github.com/repos/frost-nzcr4/find_forks/forks",
-    "branches_url": "https://api.github.com/repos/frost-nzcr4/find_forks/branches{/branch}",
-    "tags_url": "https://api.github.com/repos/frost-nzcr4/find_forks/tags",
-    "created_at": "2015-05-15T07:50:00Z",
-    "updated_at": "2015-05-15T07:50:00Z",
-    "pushed_at": "2015-05-15T07:50:00Z",
-    "git_url": "git://github.com/frost-nzcr4/find_forks.git",
-    "ssh_url": "git@github.com:frost-nzcr4/find_forks.git",
-    "clone_url": "https://github.com/frost-nzcr4/find_forks.git",
-    "svn_url": "https://github.com/frost-nzcr4/find_forks",
-    "forks": 0,
-    "forks_count": 0,
-    "watchers": 0,
-    "watchers_count": 0,
-    "stargazers_count": 0,
-    "open_issues": 0,
-    "open_issues_count": 0,
-    "has_issues": false,
-    "has_wiki": false,
-    "has_pages": false,
-    "default_branch": "master"
-  }
-]'''.encode('utf-8'))
+        response_mock.read = Mock(return_value=textwrap.dedent('''
+            [
+                {
+                    "id": 1,
+                    "name": "find_forks",
+                    "full_name": "frost-nzcr4/find_forks",
+                    "owner": {
+                      "login": "frost-nzcr4"
+                    },
+                    "private": false,
+                    "fork": true,
+                    "forks_url": "https://api.github.com/repos/frost-nzcr4/find_forks/forks",
+                    "branches_url": "https://api.github.com/repos/frost-nzcr4/find_forks/branches{/branch}",
+                    "tags_url": "https://api.github.com/repos/frost-nzcr4/find_forks/tags",
+                    "created_at": "2015-05-15T07:50:00Z",
+                    "updated_at": "2015-05-15T07:50:00Z",
+                    "pushed_at": "2015-05-15T07:50:00Z",
+                    "git_url": "git://github.com/frost-nzcr4/find_forks.git",
+                    "ssh_url": "git@github.com:frost-nzcr4/find_forks.git",
+                    "clone_url": "https://github.com/frost-nzcr4/find_forks.git",
+                    "svn_url": "https://github.com/frost-nzcr4/find_forks",
+                    "forks": 0,
+                    "forks_count": 0,
+                    "watchers": 0,
+                    "watchers_count": 0,
+                    "stargazers_count": 0,
+                    "open_issues": 0,
+                    "open_issues_count": 0,
+                    "has_issues": false,
+                    "has_wiki": false,
+                    "has_pages": false,
+                    "default_branch": "master"
+                }
+            ]''').encode('utf-8'))
         if PY3:
             response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
                                            '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
@@ -111,7 +113,7 @@ class FindForksTest(unittest.TestCase):
     def test_main(self):
         with patch('find_forks.find_forks.find_forks', return_value=None) as find_forks_mock:
             main()
-            find_forks_mock.assert_called_once_with(user=None, repo=None, dry_run=False, remote_name='origin')
+            find_forks_mock.assert_called_once_with(user=None, repo=None, no_fetch=False, dry_run=False, remote_name='origin')
 
             # Test __version__ exceptions.
             find_forks_mock = MagicMock(side_effect=SystemError())
