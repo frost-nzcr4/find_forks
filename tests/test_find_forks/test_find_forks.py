@@ -8,6 +8,7 @@ import unittest
 
 from six import PY3
 
+from find_forks.__init__ import CONFIG
 from find_forks.find_forks import add_forks, determine_names, find_forks, main
 
 if PY3:
@@ -104,16 +105,21 @@ class FindForksTest(unittest.TestCase):
             user, repo = determine_names('name-with-an-error')
 
     def test_find_forks(self):
+        sent_args = {
+            'per_page': 99
+        }
+        url = 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?per_page=%s' % sent_args['per_page']
+
         with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
             with patch('find_forks.find_forks.add_forks', return_value=None) as add_forks_mock:
-                find_forks()
-        add_forks_mock.assert_called_once()
+                find_forks(**sent_args)
+        add_forks_mock.assert_called_once_with(url)
         call_mock.assert_called_once()
 
     def test_main(self):
         with patch('find_forks.find_forks.find_forks', return_value=None) as find_forks_mock:
             main()
-            find_forks_mock.assert_called_once_with(user=None, repo=None, no_fetch=False, dry_run=False, remote_name='origin')
+            find_forks_mock.assert_called_once_with(user=None, repo=None, per_page=CONFIG['per_page'], no_fetch=False, dry_run=False, remote_name='origin')
 
             # Test __version__ exceptions.
             find_forks_mock = MagicMock(side_effect=SystemError())
