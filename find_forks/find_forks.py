@@ -61,7 +61,7 @@ def add_forks(url, follow_next=True, **kwargs):
     return None
 
 
-def find_forks(user=None, repo=None, determine_names_handler=None, per_page=100, **kwargs):
+def find_forks(user=None, repo=None, determine_names_handler=None, per_page=CONFIG['per_page'], **kwargs):
     """Find forks.
 
     Runs all methods in proper order to find all forks of github user/repo."""
@@ -94,6 +94,7 @@ def main():
     parser.add_argument('--no-fetch', default=False, action='store_true', help='Do not run git fetch to run it manually later')
     parser.add_argument('-u', '--user', default=None, help='Specify github user')
     parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
+    parser.add_argument('-p', '--per-page', default=CONFIG['per_page'], help='Specify number of records per page on github')
     parser.add_argument('--dry-run', default=CONFIG['dry_run'], action='store_true', help='Do not run the git commands')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
