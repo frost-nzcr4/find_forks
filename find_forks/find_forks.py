@@ -19,7 +19,7 @@ from .interesting import add_interesting_fork, print_interesting_forks
 log = logging.getLogger(__name__)
 
 
-def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
+def determine_names(remote_name=CONFIG['remote_name'], **kwargs):  # TRICKY: kwargs is used to prevent TypeError when it got an unexpected keyword argument from find_forks(). pylint: disable=unused-argument
     """Try to determine the user and repository name.
 
     :param remote_name: A clone from github will use "origin" as remote name by default.
