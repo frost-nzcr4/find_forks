@@ -13,5 +13,6 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 CONFIG = {
     'dry_run': False,
     'per_page': 100,  # Github limit answers to 100.
-    'remote_name': 'origin'
+    'remote_name': 'origin',
+    'start_page': 1
 }

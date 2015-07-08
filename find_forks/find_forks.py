@@ -61,14 +61,14 @@ def add_forks(url, follow_next=True, **kwargs):
     return None
 
 
-def find_forks(user=None, repo=None, determine_names_handler=None, per_page=CONFIG['per_page'], **kwargs):
+def find_forks(user=None, repo=None, determine_names_handler=None, per_page=CONFIG['per_page'], start_page=CONFIG['start_page'], **kwargs):
     """Find forks.
 
     Runs all methods in proper order to find all forks of github user/repo."""
     if user is None and repo is None:
         user, repo = determine_names(**kwargs) if determine_names_handler is None else determine_names_handler(**kwargs)
 
-    url = 'https://api.github.com/repos/%s/%s/forks?per_page=%s' % (user, repo, per_page)
+    url = 'https://api.github.com/repos/%s/%s/forks?per_page=%s&page=%s' % (user, repo, per_page, start_page)
     while url:
         url = add_forks(url, **kwargs)
 
@@ -95,6 +95,7 @@ def main():
     parser.add_argument('-u', '--user', default=None, help='Specify github user')
     parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
     parser.add_argument('-p', '--per-page', default=CONFIG['per_page'], help='Specify number of records per page on github')
+    parser.add_argument('-s', '--start-page', default=CONFIG['start_page'], help='Specify start page on github')
     parser.add_argument('--dry-run', default=CONFIG['dry_run'], action='store_true', help='Do not run the git commands')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
