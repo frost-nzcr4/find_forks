@@ -106,9 +106,10 @@ class FindForksTest(unittest.TestCase):
 
     def test_find_forks(self):
         sent_args = {
-            'per_page': 99
+            'per_page': 99,
+            'start_page': 3
         }
-        url = 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?per_page=%s' % sent_args['per_page']
+        url = 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?per_page=%s&page=%s' % (sent_args['per_page'], sent_args['start_page'])
 
         with patch('find_forks.git_wrapper.subprocess.call', return_value=None) as call_mock:
             with patch('find_forks.find_forks.add_forks', return_value=None) as add_forks_mock:
@@ -119,7 +120,9 @@ class FindForksTest(unittest.TestCase):
     def test_main(self):
         with patch('find_forks.find_forks.find_forks', return_value=None) as find_forks_mock:
             main()
-            find_forks_mock.assert_called_once_with(user=None, repo=None, per_page=CONFIG['per_page'], no_fetch=False, dry_run=False, remote_name='origin')
+            sent_args = CONFIG.copy()
+            sent_args.update({'user': None, 'repo': None, 'no_fetch': False})
+            find_forks_mock.assert_called_once_with(**sent_args)
 
             # Test __version__ exceptions.
             find_forks_mock = MagicMock(side_effect=SystemError())
