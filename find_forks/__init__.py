@@ -8,7 +8,7 @@ import sys
 
 __version__ = '0.4.1'
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(levelname)s %(name)s:%(lineno)d - %(message)s')
+logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 CONFIG = {
     'dry_run': False,

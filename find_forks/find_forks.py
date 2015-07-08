@@ -90,12 +90,22 @@ def main():
     parser.add_argument(
         '-n', '--remote-name', default=CONFIG['remote_name'],
         help='Specify git remote name to determine user and repo (default: %s)' % (CONFIG['remote_name'], ))
+    parser.add_argument('-l', '--log', default='info', help='Specify log level (notset, debug, info, warning, error, critical)')
     parser.add_argument('--no-fetch', default=False, action='store_true', help='Do not run git fetch to run it manually later')
     parser.add_argument('-u', '--user', default=None, help='Specify github user')
     parser.add_argument('-r', '--repo', default=None, help='Specify github user\'s repo')
     parser.add_argument('--dry-run', default=CONFIG['dry_run'], action='store_true', help='Do not run the git commands')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
     args = parser.parse_args()
+
+    if args.log:
+        root_log = logging.getLogger()
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('%(levelname)s %(name)s:%(lineno)d - %(message)s')
+        handler.setFormatter(formatter)
+        root_log.addHandler(handler)
+        root_log.setLevel(args.log.upper())
+    del args.log
 
     find_forks(**vars(args))
     print_interesting_forks()
