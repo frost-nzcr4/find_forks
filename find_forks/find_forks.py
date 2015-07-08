@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from argparse import ArgumentParser
 import json
+import logging
 import re
 
 from six import PY3
@@ -13,6 +14,9 @@ from six.moves import urllib  # pylint: disable=import-error
 from .__init__ import CONFIG
 from .git_wrapper import git_config_get_remote, git_fetch_all, git_remote_add
 from .interesting import add_interesting_fork, print_interesting_forks
+
+
+log = logging.getLogger(__name__)
 
 
 def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
@@ -34,11 +38,11 @@ def determine_names(remote_name=CONFIG['remote_name'], **kwargs):
 
 def add_forks(url, follow_next=True, **kwargs):
     """Add forks to the current project."""
-    print('Open %s' % url)
+    log.info('Open %s', url)
     try:
         response = urllib.request.urlopen(url, timeout=6)
     except urllib.error.URLError as ex:
-        print('Error: %s' % (ex.reason, ))
+        log.info('Error: %s', ex.reason)
         return None
 
     if PY3 and response.status == 200 or response.code == 200:

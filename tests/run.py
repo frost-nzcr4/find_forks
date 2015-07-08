@@ -7,6 +7,7 @@ from os import path
 import sys
 import unittest
 
+
 # Allow to run from console as ./tests/run.py
 BASEPATH = path.abspath(path.join(path.dirname(__file__), '..'))
 if BASEPATH not in sys.path:
