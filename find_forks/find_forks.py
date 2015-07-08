@@ -42,7 +42,7 @@ def add_forks(url, follow_next=True, **kwargs):
     try:
         response = urllib.request.urlopen(url, timeout=6)
     except urllib.error.URLError as ex:
-        log.info('Error: %s', ex.reason)
+        log.error(ex)
         return None
 
     if PY3 and response.status == 200 or response.code == 200:
