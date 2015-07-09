@@ -87,6 +87,14 @@ pip install -r requirements-prod.txt
    find_forks()
    ```
 
+### How to fetch large repo
+
+When repo has over 6000 forks one may face a github's API limit. To continue fetching use `start-page` option:
+
+```ShellSession
+python /path/to/find_forks --user=user --repo=repo --start-page 61
+```
+
 ### Define your own name determination handler
 
 ```python
