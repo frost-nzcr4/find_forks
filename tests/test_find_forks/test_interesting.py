@@ -3,12 +3,11 @@
 # pylint: disable=no-self-use
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import unittest
-
 from six import PY3
 
-from find_forks.find_forks import add_forks
 from find_forks.interesting import print_interesting_forks
+
+from .test_find_forks import FindForksCommon
 
 if PY3:
     from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module
@@ -16,17 +15,11 @@ else:
     from mock import patch, MagicMock, Mock
 
 
-class InterestingTest(unittest.TestCase):
+class InterestingTest(FindForksCommon):
     def test_print_interesting_forks(self):
         print_interesting_forks(sort='my_rule', custom_sorting_rules={'my_rule': lambda x: x[3]})
 
-        url = 'https://github.com/frost-nzcr4/find_forks'
-        response_mock = MagicMock()
-        if PY3:
-            response_mock.status = 200
-        else:
-            response_mock.code = 200
-        response_mock.read = Mock(return_value='''[
+        json_response = '''[
   {
     "id": 1,
     "name": "find_forks",
@@ -58,22 +51,9 @@ class InterestingTest(unittest.TestCase):
     "has_pages": false,
     "default_branch": "master"
   }
-]'''.encode('utf-8'))
-        if PY3:
-            response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
-                                           '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
-        else:
-            response_mock.info = Mock(return_value=(('link', '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
-                                                             '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"'), ))
+]'''.encode('utf-8')
 
-        with patch('find_forks.find_forks.urllib.request.urlopen', return_value=response_mock) as urlopen_mock:
-            with patch('find_forks.git_wrapper.subprocess.call', return_value=None):
-                self.assertEqual(add_forks(url), 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2')
-                urlopen_mock.assert_called_once_with(url, timeout=6)
-                if PY3:
-                    response_mock.status = 404
-                else:
-                    response_mock.code = 404
-                self.assertIsNone(add_forks(url))
+        response_mock = self.make_mock(json_response)
+        self.make_test(response_mock)
 
         print_interesting_forks()
