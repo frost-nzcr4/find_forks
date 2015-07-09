@@ -27,12 +27,10 @@ class FindForksCommon(unittest.TestCase):
         response_mock.read = Mock(return_value=json_response)
         if PY3:
             response_mock.status = 200
-        else:
-            response_mock.code = 200
-        if PY3:
             response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
                                            '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
         else:
+            response_mock.code = 200
             response_mock.info = Mock(return_value=(('link', '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
                                                              '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"'), ))
 
