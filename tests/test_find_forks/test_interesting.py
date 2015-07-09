@@ -6,8 +6,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import json
 from os import path
 
-from six import PY3
-
 from find_forks.interesting import print_interesting_forks
 
 from .__init__ import BASEPATH
@@ -18,7 +16,8 @@ class InterestingTest(FindForksCommon):
     def test_print_interesting_forks(self):
         print_interesting_forks(sort='my_rule', custom_sorting_rules={'my_rule': lambda x: x[3]})
 
-        json_obj = json.load(open(path.join(BASEPATH, 'fixture/response.json')))
+        with open(path.join(BASEPATH, 'fixture/response.json')) as fixture:
+            json_obj = json.load(fixture)
         json_obj[0].update({
             'forks_count': 1,
             'watchers_count': 2,

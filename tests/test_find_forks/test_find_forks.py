@@ -54,8 +54,8 @@ class FindForksTest(FindForksCommon):
     def test_add_forks(self):
         self.assertIsNone(add_forks('httttps://unavailable!url'))
 
-        json_response = open(path.join(BASEPATH, 'fixture/response.json'), 'r')
-        json_response = json_response.read().encode('utf-8')
+        with open(path.join(BASEPATH, 'fixture/response.json'), 'rb') as fixture:
+            json_response = fixture.read()
         response_mock = self.make_mock(json_response)
         self.make_test(response_mock)
 
