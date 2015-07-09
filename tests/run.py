@@ -7,6 +7,15 @@ from os import path
 import sys
 import unittest
 
+from six import PY3
+
+if not PY3:
+    try:
+        from mock import __version__
+    except ImportError:
+        print('Please run `pip install mock`')
+        raise
+
 
 # Allow to run from console as ./tests/run.py
 BASEPATH = path.abspath(path.join(path.dirname(__file__), '..'))
