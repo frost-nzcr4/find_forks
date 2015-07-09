@@ -17,17 +17,44 @@ else:
     from mock import patch, MagicMock, Mock
 
 
-class FindForksTest(unittest.TestCase):
-    def test_add_forks(self):
-        self.assertIsNone(add_forks('httttps://unavailable!url'))
-
-        url = 'https://github.com/frost-nzcr4/find_forks'
+class FindForksCommon(unittest.TestCase):
+    @staticmethod
+    def make_mock(json_response):
+        """Used in test_interesting.py."""
         response_mock = MagicMock()
         if PY3:
             response_mock.status = 200
         else:
             response_mock.code = 200
-        response_mock.read = Mock(return_value=textwrap.dedent('''
+        response_mock.read = Mock(return_value=json_response)
+        if PY3:
+            response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
+                                           '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
+        else:
+            response_mock.info = Mock(return_value=(('link', '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
+                                                             '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"'), ))
+
+        return response_mock
+
+    def make_test(self, response_mock):
+        """Used in test_interesting.py."""
+        url = 'https://github.com/frost-nzcr4/find_forks'
+        with patch('find_forks.find_forks.urllib.request.urlopen', return_value=response_mock) as urlopen_mock:
+            with patch('find_forks.git_wrapper.subprocess.call', return_value=None):
+                self.assertEqual(add_forks(url), 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2')
+                urlopen_mock.assert_called_once_with(url, timeout=6)
+                if PY3:
+                    response_mock.status = 404
+                else:
+                    response_mock.code = 404
+                self.assertIsNone(add_forks(url))
+
+
+class FindForksTest(FindForksCommon):
+    def test_add_forks(self):
+        self.assertIsNone(add_forks('httttps://unavailable!url'))
+
+        json_response = textwrap.dedent('''
             [
                 {
                     "id": 1,
@@ -60,23 +87,10 @@ class FindForksTest(unittest.TestCase):
                     "has_pages": false,
                     "default_branch": "master"
                 }
-            ]''').encode('utf-8'))
-        if PY3:
-            response_mock.getheader = Mock(return_value='<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
-                                           '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"')
-        else:
-            response_mock.info = Mock(return_value=(('link', '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2>; rel="next", '
-                                                             '<https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=3>; rel="last"'), ))
+            ]''').encode('utf-8')
 
-        with patch('find_forks.find_forks.urllib.request.urlopen', return_value=response_mock) as urlopen_mock:
-            with patch('find_forks.git_wrapper.subprocess.call', return_value=None):
-                self.assertEqual(add_forks(url), 'https://api.github.com/repos/frost-nzcr4/find_forks/forks?page=2')
-                urlopen_mock.assert_called_once_with(url, timeout=6)
-                if PY3:
-                    response_mock.status = 404
-                else:
-                    response_mock.code = 404
-                self.assertIsNone(add_forks(url))
+        response_mock = self.make_mock(json_response)
+        self.make_test(response_mock)
 
     def test_determine_names(self):
         """To run this test you'll need to prepare git first, run:
