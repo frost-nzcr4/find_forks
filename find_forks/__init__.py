@@ -6,7 +6,7 @@ import logging
 import sys
 
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

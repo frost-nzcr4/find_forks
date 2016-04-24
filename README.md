@@ -78,7 +78,6 @@ pip install -r requirements-prod.txt
    python /path/to/find_forks --user=user --repo=repo
    ```
 
-
 2. Use as module:
 
    ```python
@@ -86,6 +85,17 @@ pip install -r requirements-prod.txt
 
    find_forks()
    ```
+
+### How to remove duplicate branches
+
+Current workaround to remove duplicates:
+
+```ShellSession
+for BRANCH in $( git branch -r --no-color | cut -d" " -f3 ); do
+    git checkout "$BRANCH"
+    git branch -r --merged --no-color | grep -v -e "\(origin\|upstream\|your\-github\-name\)/" | xargs -n 1 git branch -r -d
+done
+```
 
 ### How to fetch large repo
 
