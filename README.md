@@ -15,18 +15,21 @@ Cloning into 'find_forks'...
 user@host ~/git $ git clone https://github.com/frost-nzcr4/webmoney.git
 Cloning into 'webmoney'...
 user@host ~/git $ cd webmoney/
-user@host ~/git/webmoney $ python ../find_forks/ --dry-run
+user@host ~/git/webmoney $ python ../find_forks/
 git config --get remote.origin.url
 Open https://api.github.com/repos/frost-nzcr4/webmoney/forks?per_page=100
-git remote add aktuba https://github.com/aktuba/webmoney.git
-git remote add 4you4ever https://github.com/4you4ever/webmoney.git
-git remote add marliotto https://github.com/marliotto/webmoney.git
+git remote add github-user-1 https://github.com/github-user-1/webmoney.git
+git remote add github-user-2 https://github.com/github-user-2/webmoney.git
 git fetch --all
 Possible interesting forks
                                  | forks | stargazers | watchers
 ----------------------------------------------------------------
-                       4you4ever |    0 |    1 |    1
-                       marliotto |    0 |    1 |    1
+                   github-user-2 |    0 |    1 |    1
+user@host ~/git/webmoney $ ./../find_forks/remove_duplicate_branches.sh your-github-name
+Deleted remote branch github-user-1/master (was 5827568).
+Deleted remote branch github-user-2/master (was 5827568).
+Deleted remote branch github-user-1/develop (was cd7ec22).
+Deleted remote branch github-user-2/develop (was cd7ec22).
 ```
 
 ## Install
@@ -86,20 +89,17 @@ pip install -r requirements-prod.txt
    find_forks()
    ```
 
-### How to remove duplicate branches
+3. Now remove duplicate branches. Current workaround to remove duplicates
+   is [remove_duplicate_branches.sh](https://github.com/frost-nzcr4/find_forks/blob/master/remove_duplicate_branches.sh):
 
-Current workaround to remove duplicates:
-
-```ShellSession
-for BRANCH in $( git branch -r --no-color | cut -d" " -f3 ); do
-    git checkout "$BRANCH"
-    git branch -r --merged --no-color | grep -v -e "\(origin\|upstream\|your\-github\-name\)/" | xargs -n 1 git branch -r -d
-done
-```
+   ```ShellSession
+   /path/to/find_forks/remove_duplicate_branches.sh your-github-name
+   ```
 
 ### How to fetch large repo
 
-When repo has over 6000 forks one may face a github's API limit. To continue fetching use `start-page` option:
+When repo has over 6000 forks one may face a github's API limit. To continue
+ fetching use `start-page` option:
 
 ```ShellSession
 python /path/to/find_forks --user=user --repo=repo --start-page 61
@@ -132,7 +132,8 @@ Install additional development requirements:
 pip install -r requirements-dev.txt
 ```
 
-Before you start to pull request your changes on github please run tests to make sure that nothing went wrong:
+Before you start to pull request your changes on github please run tests
+to make sure that nothing went wrong:
 
 ```ShellSession
 ./tests/run.py
@@ -157,7 +158,9 @@ then open `tests/coverage/html_report/index.html` with your browser.
 
 ## License & Authors
 
-When I needed `find_forks` functionality I'd start to search for available projects and found [gist](https://gist.github.com/akumria/3405534) of Anand Kumria (@akumria) which I used as starting point to this module.
+When I needed `find_forks` functionality I'd start to search for available
+projects and found [gist](https://gist.github.com/akumria/3405534)
+of Anand Kumria (@akumria) which I used as starting point to this module.
 
 Copyright (c) 2015 Alexander Pervakov
 
