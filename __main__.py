@@ -6,8 +6,13 @@ from six import PY3
 
 try:
     from .find_forks.find_forks import main
-except (SystemError, ValueError) as ex:
-    if PY3 and isinstance(ex, SystemError) or isinstance(ex, ValueError):
+except (ImportError, SystemError) as ex:
+    if PY3:
+        from find_forks.find_forks import main
+    else:
+        raise
+except ValueError as ex:
+    if not PY3:
         from find_forks.find_forks import main
     else:
         raise

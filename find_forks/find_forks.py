@@ -80,9 +80,14 @@ def main():
     """Main function to run as shell script."""
     try:
         from .__init__ import __version__
-    except (SystemError, ValueError) as ex:
-        if PY3 and isinstance(ex, SystemError) or isinstance(ex, ValueError):
-            from __init__ import __version__  # pylint: disable=import-error,no-name-in-module
+    except (ImportError, SystemError):
+        if PY3:
+            from __init__ import __version__
+        else:
+            raise
+    except ValueError:
+        if not PY3:
+            from __init__ import __version__
         else:
             raise
 
