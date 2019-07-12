@@ -3,8 +3,8 @@
 # pip install -r requirements-dev.txt
 #
 
-coverage==3.7.1
+coverage==4.5.3
 # Note: python 2 needed mock.
 #mock==1.0.1
-pep8==1.6.2
-pylint==1.4.3
+pycodestyle==2.2.0
+pylint==1.9.4
