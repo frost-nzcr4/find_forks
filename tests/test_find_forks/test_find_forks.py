@@ -72,7 +72,7 @@ class FindForksTest(FindForksCommon):
 
         user, repo = determine_names('test-origin-1')
         self.assertEqual(user, 'frost-nzcr4')
-        self.assertEqual(repo, 'webmoney')
+        self.assertEqual(repo, 'find_forks')
 
         user, repo = determine_names('test-origin-2')
         self.assertEqual(user, 'yagmort')
