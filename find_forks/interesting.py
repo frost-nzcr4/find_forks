@@ -44,7 +44,7 @@ def print_interesting_forks(sort=None, custom_sorting_rules=None, width=32):
 
     if not INTERESTING_FORKS:
         print('There are no interesting forks')
-        return None
+        return
 
     print('Possible interesting forks')
     print('%s | forks | stargazers | watchers' % (' ' * width))

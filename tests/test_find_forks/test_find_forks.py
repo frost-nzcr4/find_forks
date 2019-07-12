@@ -16,7 +16,7 @@ from .__init__ import BASEPATH
 if PY3:
     from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module
 else:
-    from mock import patch, MagicMock, Mock
+    from mock import patch, MagicMock, Mock  # pylint: disable=import-error
 
 
 class FindForksCommon(unittest.TestCase):

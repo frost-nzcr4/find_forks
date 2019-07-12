@@ -19,7 +19,9 @@ from .interesting import add_interesting_fork, print_interesting_forks
 log = logging.getLogger(__name__)
 
 
-def determine_names(remote_name=CONFIG['remote_name'], **kwargs):  # TRICKY: kwargs is used to prevent TypeError when it got an unexpected keyword argument from find_forks(). pylint: disable=unused-argument
+# TRICKY: kwargs is used to prevent TypeError when it got an unexpected
+# keyword argument from find_forks().
+def determine_names(remote_name=CONFIG['remote_name'], **kwargs):  # pylint: disable=unused-argument
     """Try to determine the user and repository name.
 
     :param remote_name: A clone from github will use "origin" as remote name by default.
@@ -30,8 +32,8 @@ def determine_names(remote_name=CONFIG['remote_name'], **kwargs):  # TRICKY: kwa
     if not remote_url:
         raise RuntimeError('Could not get remote url with name "%s". Check output of your `git remote`.' % (remote_name, ))
 
-    remote_url = remote_url[15:] if 'git@github.com:' == remote_url[0:15] else remote_url
-    remote_url = remote_url[:-4] if '.git' == remote_url[-4:] else remote_url
+    remote_url = remote_url[15:] if remote_url[0:15] == 'git@github.com:' else remote_url
+    remote_url = remote_url[:-4] if remote_url[-4:] == '.git' else remote_url
 
     return remote_url.split('/')[-2:]
 
@@ -116,6 +118,7 @@ def main():
 
     find_forks(**vars(args))
     print_interesting_forks()
+
 
 if __name__ == '__main__':
     main()

@@ -30,5 +30,6 @@ def main():
     runner = unittest.TextTestRunner(buffer=True)
     runner.run(suite)
 
+
 if __name__ == '__main__':
     main()
