@@ -34,7 +34,7 @@ Deleted remote branch github-user-2/develop (was cd7ec22).
 
 ## Install
 
-You need `python` (3.6.8 and 2.7.8 tested) and `pip` installed.
+You need `python` (3.6.8 and 2.7.15 tested) and `pip` installed.
 
 ```ShellSession
 git clone --branch master https://github.com/frost-nzcr4/find_forks.git

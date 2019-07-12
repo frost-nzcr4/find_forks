@@ -4,7 +4,5 @@
 #
 
 coverage==4.5.3
-# Note: python 2 needed mock.
-#mock==1.0.1
 pycodestyle==2.2.0
 pylint==1.9.4

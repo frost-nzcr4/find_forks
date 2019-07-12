@@ -1,0 +1,7 @@
+# To add specified requirements install `pip` and run:
+#
+# pip install -r requirements-dev-py27.txt
+#
+
+-r requirements-dev.txt
+mock==3.0.5

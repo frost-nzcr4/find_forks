@@ -14,7 +14,7 @@ from find_forks.find_forks import add_forks, determine_names, find_forks, main
 from .__init__ import BASEPATH
 
 if PY3:
-    from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module
+    from unittest.mock import patch, MagicMock, Mock  # pylint: disable=no-name-in-module,import-error
 else:
     from mock import patch, MagicMock, Mock  # pylint: disable=import-error
 

@@ -10,7 +10,7 @@ from six import PY3
 from find_forks.git_wrapper import git_fetch_all, git_remote_add
 
 if PY3:
-    from unittest.mock import patch  # pylint: disable=no-name-in-module
+    from unittest.mock import patch  # pylint: disable=no-name-in-module,import-error
 else:
     from mock import patch  # pylint: disable=import-error
 
