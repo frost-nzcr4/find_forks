@@ -54,7 +54,7 @@ def add_forks(url, follow_next=True, **kwargs):
         # Gets link to next page.
         if follow_next:
             link = response.getheader('Link', '') if PY3 else dict(response.info()).get('link', '')
-            match = re.match(r'<(.*)>;\ rel="next"', link)
+            match = re.search(r'<([^<]*)>;\ rel="next"', link)
             if match:
                 return match.group(1)
 
