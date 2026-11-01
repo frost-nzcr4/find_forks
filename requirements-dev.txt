@@ -7,4 +7,4 @@ coverage==3.7.1
 # Note: python 2 needed mock.
 #mock==1.0.1
 pep8==1.6.2
-pylint==1.4.3
+pylint==4.0.9
